@@ -1,0 +1,276 @@
+{% extends "B_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+<style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<script>
+
+var app = angular.module("myApp", []);
+app.controller("RecordCtrl", function($scope,$http) {
+console.log("hhh");
+  $scope.fetchData = function(){
+console.log("hi there");
+    $http({
+        method: 'POST',
+        url: '/orderList1',
+
+    }).then(function(response) {
+        $scope.records = response.data;
+        console.log('mm', $scope.records);
+         }, function(error) {
+        console.log(error);
+    });
+}
+$scope.onOrderChange= function(record){
+//alert("hi")
+if(record.no_orders > 999999)
+{
+$('#invalidOrder').modal('show')
+}
+   
+}
+
+
+$scope.fetchData();
+
+     $scope.showRunPopUp = function(record){
+     
+      $scope.info = record;
+      $scope.error;
+       $http({
+        method  : 'POST',
+        url     : '/placeOrder',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+                    info: $scope.info
+                }
+    })
+      .then(function(response) {
+          
+              $http({
+                    method: 'POST',
+                    url: '/orderList1',
+
+                    }).then(function(response) {
+                    $scope.records = response.data;
+                     $('#orderPlaced').modal('show')
+                    console.log('WriteResult', $scope.records);
+                     }, function(error) {
+                     $scope.error=error.data;
+               
+                    console.log(error);
+                    });
+         console.log(response);
+        }, function(error) {
+                 $('#orderNotPlaced').modal('show')
+                console.log(error);
+            });
+  }; 
+  $scope.addToWishList = function(record){
+     
+      $scope.info = record;
+      
+      $scope.error;
+       $http({
+        method  : 'POST',
+        url     : '/addToWishList',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+                    info: $scope.info
+                }
+    })
+      .then(function(response) {
+          
+              $http({
+                    method: 'POST',
+                    url: '/orderList1',
+
+                    }).then(function(response) {
+                    $scope.records = response.data;
+                     $('#addedToWishList').modal('show')
+                    console.log('WriteResult', $scope.records);
+                     }, function(error) {
+                     $scope.error=error.data;
+               
+                    console.log(error);
+                    });
+         console.log(response);
+        }, function(error) {
+                 $('#notAddedToWishList').modal('show')
+                console.log(error);
+            });
+  };   
+       
+	});
+	
+  
+   
+   
+
+	
+</script>
+
+
+</head>
+
+
+<body  ng-controller="RecordCtrl" >
+<div class="panel panel-default">
+  <div class="panel-heading" align="CENTER"><h3>Place Order</h3></div>    
+    
+  </div>
+    <form>
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" class="form-control" placeholder="Search Keywords" ng-model="searchKeywords">
+      </div>      
+    </div>
+  </form>
+<div class="list_data">
+
+
+<hr />
+<div class="modal fade" id="notAddedToWishList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#F3206D;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Not Added to Wish List</h4>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="modal fade" id="invalidOrder" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#F3206D;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Max Length should not be more then 6 characters</h4>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="modal fade" id="addedToWishList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#3CF320;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Added to Wish List</h4>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="modal fade" id="orderNotPlaced" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#F3206D;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Order Not Placed</h4>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="modal fade" id="orderPlaced" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#3CF320;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Order Placed</h4>
+                </div>
+            </div>
+        </div>
+</div>
+<table class="table w3-light-grey">
+<thead>
+      <tr>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
+                   Product Id
+                    <span ng-show="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+               <th>
+                  <a href="#" ng-click="sortType = 'product_name'; sortReverse = !sortReverse">
+                   Product Name
+                    <span ng-show="sortType == 'product_name' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_name' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+               <th>
+                  <a href="#" ng-click="sortType = 'product_type'; sortReverse = !sortReverse">
+                   Product Type
+                    <span ng-show="sortType == 'product_type' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_type' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'description'; sortReverse = !sortReverse">
+                   Description
+                    <span ng-show="sortType == 'description' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'description' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'price'; sortReverse = !sortReverse">
+                   Price
+                    <span ng-show="sortType == 'price' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'price' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'available_quantity'; sortReverse = !sortReverse">
+                  Available Quantity
+                    <span ng-show="sortType == 'available_quantity' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'available_quantity' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>Ordered Quantity</th>
+              <th>Place Order</th>
+              <th>Wish List</th>
+      </tr>
+ </thead>
+     <tr ng-repeat="record in records | orderBy:sortType:sortReverse | filter:searchKeywords" >
+
+
+                <td>{{'{{record.product_id }}'}}</td>
+                <td>{{'{{record.product_name }}'}}</td>
+                <td>{{'{{record.Product_type  }}'}}</td>
+                <td>{{'{{record.product_description  }}'}}</td>
+                <td>{{'{{record.price_per_qty  }}'}}</td>
+                
+                <td>
+                {{'{{record.product_quantity-record.no_orders}}'}}
+                </td>
+                <td class="form-group">
+                            
+                     <input type="number" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"  class="form-control" ng-model="record.new_order"  id="txtUsername" ng-change="onOrderChange(record)" required>
+                </td>
+                <td>
+                <div  ng-if="record.product_quantity > '0' && record.new_order> 0 && record.product_quantity >= record.new_order"  style="cursor:pointer;color:#ADA5FA;" ng-click=showRunPopUp(record) class="glyphicon glyphicon-plus" aria-hidden="true"> ORDER </div>
+                 </td>
+                 <td>
+                 <div ng-if="record.product_quantity <= '0' && record.new_order>0 " style="cursor:pointer;color:#ADA5FA;" ng-click=addToWishList(record) class="glyphicon glyphicon-heart-empty" aria-hidden="true"></div>
+                </td>
+                
+                
+</tr>
+</table>
+
+</div>
+</body>
+
+</html>
+
+
+
+{% endblock %}

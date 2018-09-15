@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Buyers's Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 550px}
+	
+	 .bg{
+	 
+	 width: 85%;
+	 }
+	 
+	 .column {
+    float: left;
+    padding: 20px;
+    height: 300px; /* Should be removed. Only for demonstration */
+}
+
+.left {
+  width: 18%;
+}
+
+.right {
+  width: 60%;
+}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+        
+    /* On small screens, set height to 'auto' for the grid */
+    @media screen and (max-width: 767px) {
+      .row.content {height: auto;} 
+    }
+  </style>
+</head>
+<body>
+
+<div class="row">
+<div class="col-sm-12 ">
+  <div class="btn-group " >
+    <a href="#" class="btn btn-primary btn-lg">Order List</a>
+    <a href="#" class="btn btn-primary btn-lg">Order Status</a>
+    <a href="#" class="btn btn-primary btn-lg">Supplier Search</a>
+	<a href="{{ url_for('createJob') }}" class="btn btn-primary btn-lg">Create Job</a>
+    <a href="#" class="btn btn-primary btn-lg">Capacity Available</a>
+    <a href="#" class="btn btn-primary btn-lg">On Time Delivery</a>
+	<a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Logout</a>
+  </div>
+</div>
+</div>
+<div class="row ">
+    <div class="col-sm-2 sidenav hidden-xs column left">
+      <img src="{{ url_for('static', filename='img/img_avatar.png') }}" width="165" height="145">
+      <h5 align='center'>{{session['username']}}</h5>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="#section2">Latest Orders</a></li>
+        <li><a href="#section3">WIP Orders</a></li>
+        <li><a href="#section3">Complete Orders</a></li>
+		<li><a href="#section3">Waiting for Dispatch Orders</a></li>
+		<li><a href="#section3">Order Conversion</a></li>
+		<li><a href="#section3">Order Status Snapshot</a></li>
+      </ul><br>
+    </div>
+    <br>
+<div class="column right">
+ {% block body %}{% endblock %}
+ </div>
+  </div>
+
+</body>
+</html>

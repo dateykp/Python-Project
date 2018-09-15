@@ -1,0 +1,156 @@
+{% extends "S_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+ <head>
+   <style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+   <script>
+        function setData(selectedData){
+        var myJson=JSON.parse(selectedData)
+        var product_type=myJson.Product_type;
+        var product_description=myJson.product_description;
+        document.getElementById("pType").value=product_type;
+        document.getElementById("desc").value=product_description;
+        document.forms["addProduct"]["Producttype"].value=product_type;
+
+        
+        }
+        var app = angular.module("myApp", []);
+        app.controller("FormCtrl", function($scope,$http) {
+          var formData = {
+                        product_type: "xyz",
+                        price: "default",
+                        quantity: "default",
+                        delivery: "default",
+                  };
+        $scope.fetchData = function(){
+        console.log("hi there");
+            $http({
+                method: 'POST',
+                url: '/getProducts',
+                headers: { 'Content-Type': 'application/json' },
+            }).then(function(response) {
+                $scope.products = response.data;
+                
+                console.log('mm', $scope.products);
+                 }, function(error) {
+                console.log(error);
+            });
+        }
+        $scope.fetchData(); 
+        $scope.save = function() {
+        formData = $scope.form;
+        };
+        $scope.submitForm = function(){
+        
+          $scope.save();
+          console.log($scope.selectedData);
+          pro=JSON.parse($scope.selectedData)
+          var inputInfo={
+              formData: $scope.form,
+              product: pro
+          };
+          $http({
+                method: 'POST',
+                url: '/addproduct',
+                headers: { 'Content-Type': 'application/json' },
+                data: {
+                    info: inputInfo
+                    
+                    }
+                
+            }).then(function(response) {
+                $('#recordAdded').modal('show')
+                $scope.selectedData="";
+                $scope.form.price="";
+                $scope.form.quantity="";
+                $scope.form.delivery="";
+               }, function(error) {
+                console.log(error);
+            });
+        }
+    
+        });
+    </script>
+ </head>
+<body ng-controller="FormCtrl">
+
+    <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Add Product</h3></div>
+         <div class="modal fade" id="recordAdded" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#3CF320;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Product Added</h4>
+                </div>
+            </div>
+        </div>
+</div>
+   <table class="table w3-light-grey" >
+    <div>
+        
+            <form name="addProduct" method=POST ng-controller="FormCtrl" ng-submit="submitForm()">
+            	<br/>
+                <div>
+                <label for="txtUsername" class="control-label">Analysis Completed</label>
+                <select ng-model="caseData.Analysis_Completed">
+                                 <option value="Y">YES</option>
+                                 <option value="N">NO</option>
+                        </select>
+             </div>
+               <br>
+             <div>
+                <label for="txtIP" class="control-label">Duplicate Issue</label>
+                <input type="text" ng-model="caseData.DUPLICATE_ISSUE" id="txtIP" >
+                </div>
+                <br>
+				   <div>
+                <label for="txtIP" class="control-label">Status</label>
+                <select ng-model="caseData.STATUS">
+                                 <option value="ANALIZING">ANALIZING</option>
+                                 <option value="Pending_with_harhsa">Confirmation Pending With Harsha</option>
+                                 <option value="data_cv_issue">Data/CV Issue</option>
+                                 <option value="Design_Gap">Design Gap</option>
+                                 <option value="Fix_In_Progress">Fix In Progress</option>
+                                 <option value="ICES_Defect">ICES Defect</option>
+                                 <option value="ICES_information_needed">ICES information needed</option>
+                                 <option value="IEDSS_working_fine_ICES_cleanup">IEDSS working fine ICES cleanup</option>
+                                 <option value="Issue Closed">Issue Closed</option>
+                                 <option value="Not to be analyzed">Not to be analyzed</option>
+                        </select>
+                </div>
+                <br>
+				   <div>
+                <label for="txtIP" class="control-label">Fixed</label>
+                <select ng-model="caseData.STATUS">
+                                 <option value="YES">YES</option>
+                                 <option value="NO">NO</option>
+                                 <option value="INPORGRESS">INPORGRESS</option>
+                                 
+                        </select>
+                </div>
+                <br>
+				   <div>
+                <label>Quantity Available*</label><input type="text"  pattern="[0-9]{0,20}" maxlength="6" title="Enter only numbers " class="form-control" name="quantity" placeholder="Quantity Available" ng-model= "form.quantity" required>
+                </div>
+				   <br>
+				    <div>
+                 <label>Delivery Within Days*</label><input type="text"  pattern="[0-9]{0,20}" maxlength="6" title="Enter only numbers " class="form-control" name="delivery" placeholder="Delivery Within Days" ng-model= "form.delivery" required>
+                 </div>
+                <br>
+                 <span align ="CENTER"><input type="submit" ngClick="Submit" ></span>
+            </form>
+            <br>
+        </div>
+    
+        </table>
+    </div>
+</div>
+{% endblock %}

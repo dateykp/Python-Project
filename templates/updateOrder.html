@@ -1,0 +1,158 @@
+{% extends "S_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+ <head>
+   <style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  
+   <script>
+
+        var app = angular.module("myApp", []);
+        app.controller("RecordCtrl", function($scope,$http) {
+        $scope.sortType     = 'name'; 
+        $scope.sortReverse  = false;  
+        $scope.searchKeywords   = '';    
+        console.log("hhh");
+          $scope.fetchData = function(){
+        console.log("hi there");
+            $http({
+                method: 'POST',
+                url: '/getOrderData',
+        
+            }).then(function(response) {
+                $scope.records=response.data
+                 }, function(error) {
+                console.log(error);
+            });
+        }
+          $scope.fetchData();      
+    $scope.updateOrder = function(delivery_stauts,record){
+    console.log(delivery_stauts);
+    record.delivery_stauts=delivery_stauts;
+    console.log(record);
+      $scope.delivery_stauts = delivery_stauts;
+      $scope.record = record;
+      
+      
+       $http({
+        method  : 'POST',
+        url     : '/updateOrderDetails',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+                    record: $scope.record
+                    
+             }
+    }).then(function(response) {
+						console.log(response.data);
+						$scope.fetchData();
+						$('#addPopUp').modal('hide')
+					}, function(error) {
+						console.log(error);
+					});
+  };   
+     
+        });
+    </script>
+ </head>
+<body  ng-controller="RecordCtrl" >
+    <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Order's Pending for Approval</h3></div>
+         
+    
+  </div>
+    <form>
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" class="form-control" placeholder="Search Keywords" ng-model="searchKeywords">
+      </div>      
+    </div>
+  </form>
+            <div class="list_data">
+        <table class="table w3-light-grey" >
+            <thead align="top">
+              <tr>
+              <th>
+                  <a href="#" ng-click="sortType = 'order_id'; sortReverse = !sortReverse">
+                    Order Id
+                    <span ng-show="sortType == 'order_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'order_id' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
+                     Product Id
+                    <span ng-show="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_name'; sortReverse = !sortReverse">
+                    Product Name
+                    <span ng-show="sortType == 'product_name' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_name' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'price'; sortReverse = !sortReverse">
+                    Price
+                    <span ng-show="sortType == 'price' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'price' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>  
+              <th>
+                  <a href="#" ng-click="sortType = 'quantity'; sortReverse = !sortReverse">
+                    Quantity
+                    <span ng-show="sortType == 'quantity' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'quantity' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>  
+               <th>
+                   <a href="#" ng-click="sortType = 'order_dt'; sortReverse = !sortReverse">
+                    Order Date
+                     <span ng-show="sortType == 'order_dt' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'order_dt' && sortReverse" class="fa fa-caret-up"></span>
+              </th>  
+               <th>
+           
+                   Status
+                    
+                  </a>
+              </th>   
+               <th> Approve/Decline  </th>   
+              </tr>
+             </thead>
+            <tr ng-repeat="record in records | orderBy:sortType:sortReverse | filter:searchKeywords" >
+            
+            
+                            <td>{{'{{record.order_id }}'}}</td>
+                            <td>{{'{{record.product_id }}'}}</td>
+                            <td>{{'{{record.product_name  }}'}}</td>
+                            <td>{{'{{record.price  }}'}}</td>
+                            <td>{{'{{record.quantity  }}'}}</td>
+                            <td>{{'{{record.order_dt }}'}}</td> 
+                            <td>
+                            <div ng-if="record.delivery_stauts == 'OG'"  style="color:#F39E20;"> <b>In Progress </b></div>
+                            <div ng-if="record.delivery_stauts == 'CO'"  style="color:#3CF320;" > <b>Delivered </b></div>
+                            <div ng-if="record.delivery_stauts == 'DI'"  style="color:#F3206D;" ><b> Declined</b> </div>
+                            </td>    
+                            <td>
+                              <div style="cursor:pointer;color:#ADA5FA;" ng-click=updateOrder("CO",record) class="glyphicon glyphicon-ok-sign" aria-hidden="true">  </div>
+                              <div style="cursor:pointer;color:#ADA5FA;" ng-click=updateOrder("DI",record) class="glyphicon glyphicon-remove-sign" aria-hidden="true">  </div>      
+                            </td>
+            </tr>
+        </table>
+
+</div>
+      </div>
+      </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}

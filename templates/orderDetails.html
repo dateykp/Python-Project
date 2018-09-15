@@ -1,0 +1,150 @@
+{% extends "B_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+ <head>
+   <style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+     <script data-require="angular-ui-bootstrap@0.3.0" data-semver="0.3.0" src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.3.0.min.js"></script>
+  <script data-require="angular.js@1.1.5" data-semver="1.1.5" src="http://code.angularjs.org/1.1.5/angular.min.js"></script>
+
+    <link data-require="bootstrap-css@2.3.2" data-semver="2.3.2" rel="stylesheet" href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" />
+
+
+   <script>
+
+        var app = angular.module("myApp", ["ui.bootstrap"]);
+        app.controller("RecordCtrl", function($scope,$http) {
+        $scope.sortType     = 'name'; 
+        $scope.sortReverse  = false;  
+        $scope.searchKeywords   = '';    
+        console.log("hhh");
+        $scope.fetchData = function(){
+        console.log("hi there");
+            $http({
+                method: 'POST',
+                url: '/showOrderDetails',
+        
+            }).then(function(response) {
+               $scope.curPage = 1,
+        $scope.itemsPerPage = 5,
+        $scope.maxSize = 5;
+        records=response.data;
+  
+      $scope.numOfPages = function () {
+            return Math.ceil(records.length / $scope.itemsPerPage);
+        };
+  
+        $scope.$watch('curPage + numPerPage', function() {
+        var begin = (($scope.curPage - 1) * $scope.itemsPerPage),
+        end = begin + $scope.itemsPerPage;
+    
+        $scope.filteredItems = records.slice(begin, end);
+          });
+        
+                 }, function(error) {
+                console.log(error);
+            });
+        }
+          $scope.fetchData();       
+        });
+    </script>
+ </head>
+<body  ng-controller="RecordCtrl" >
+    <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Order Details</h3></div
+  </div>
+    <form>
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <input type="text" class="form-control" placeholder="Search Keywords" ng-model="searchKeywords">
+      </div>      
+    </div>
+  </form>
+            <div class="list_data">
+        <table class="table w3-light-grey" >
+            <thead align="top">
+              <tr>
+              <th>
+                  <a href="#" ng-click="sortType = 'order_id'; sortReverse = !sortReverse">
+                    Order Id
+                    <span ng-show="sortType == 'order_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'order_id' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
+                     Product Id
+                    <span ng-show="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_name'; sortReverse = !sortReverse">
+                    Product Name
+                    <span ng-show="sortType == 'product_name' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_name' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'price'; sortReverse = !sortReverse">
+                    Price
+                    <span ng-show="sortType == 'price' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'price' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>  
+              <th>
+                  <a href="#" ng-click="sortType = 'quantity'; sortReverse = !sortReverse">
+                    Quantity
+                    <span ng-show="sortType == 'quantity' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'quantity' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>  
+               <th>
+                  <a href="#" ng-click="sortType = 'delivery_stauts'; sortReverse = !sortReverse">
+                    Status
+                    <span ng-show="sortType == 'delivery_stauts' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'delivery_stauts' && sortReverse" class="fa fa-caret-up"></span>
+              </th>  
+               <th>
+                  <a href="#" ng-click="sortType = 'order_dt'; sortReverse = !sortReverse">
+                   Order Date
+                    <span ng-show="sortType == 'order_dt' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'order_dt' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>   
+               
+              </tr>
+             </thead>
+            <tr ng-repeat="record in filteredItems | orderBy:sortType:sortReverse | filter:searchKeywords" >
+            
+            
+                            <td>{{'{{record.order_id }}'}}</td>
+                            <td>{{'{{record.product_id }}'}}</td>
+                            <td>{{'{{record.product_name  }}'}}</td>
+                            <td>{{'{{record.price  }}'}}</td>
+                            <td>{{'{{record.quantity  }}'}}</td>
+                            <td>
+                            <div ng-if="record.delivery_stauts == 'OG'"  style="color:#F39E20;"> <b>In Progress </b></div>
+                            <div ng-if="record.delivery_stauts == 'CO'"  style="color:#3CF320;" > <b>Delivered </b></div>
+                            <div ng-if="record.delivery_stauts == 'DI'"  style="color:#F3206D;" ><b> Declined</b> </div>
+                           </td>
+                            <td>{{'{{record.order_dt }}'}}</td>             
+            </tr>
+        </table>
+        <div data-pagination="" data-num-pages="numOfPages()" 
+      data-current-page="curPage" data-max-size="maxSize"  
+      data-boundary-links="true"></div>
+</div>
+      </div>
+      </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}

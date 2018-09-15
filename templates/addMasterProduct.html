@@ -1,0 +1,95 @@
+{% extends "S_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+ <head>
+   <style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+   <script>
+
+        var app = angular.module("myApp", []);
+        app.controller("FormCtrl", function($scope,$http) {
+        var formData = {
+                        productname: "default",
+                        Producttype: "default",
+                        description: "default",
+                        };  
+        console.log("hhh");
+        $scope.save = function() {
+        formData = $scope.form;
+        };
+          $scope.submitForm = function(){
+          $scope.save();
+          $scope.form
+          console.log("Form Submitted");
+          console.log(formData);
+            $http({
+                method: 'POST',
+                url: '/insertMasterData',
+                data: {
+                    info: formData
+                    }
+                
+            }).then(function(response) {
+                $('#recordAdded').modal('show')
+                $scope.form.productname="";
+                 $scope.form.Producttype="";
+                  $scope.form.description="";
+               }, function(error) {
+                console.log(error);
+            });
+        }
+              
+        });
+    </script>
+ </head>
+<body ng-controller="FormCtrl">
+
+    <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Create Product</h3></div>
+         <div class="modal fade" id="recordAdded" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#3CF320;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Product Added</h4>
+                </div>
+            </div>
+        </div>
+</div>
+   <table class="table w3-light-grey" >
+    <div>
+        
+            <form name="addProduct" method=POST ng-controller="FormCtrl" ng-submit="submitForm()">
+            	<br/>
+                <div>
+                <label>Product Name*</label> 
+               <div>
+               <input type="text" class="form-control" name="productname" pattern="([a-zA-Z]){0,20}" title="Please Enter Valid Product Name" placeholder="Product Name" ng-model= "form.productname" required>
+                </div>
+             </div>
+               <br>
+                <div>
+                <label>Product Type*</label><input type="text" class="form-control" name="Producttype" pattern="([a-zA-Z]){0,20}" title="Please Enter Valid Product Type" placeholder="Product Type" ng-model= "form.Producttype" required>
+                </div>
+                <br>
+				   <div>
+                <label>Description*</label><input type="text" class="form-control" name="description" pattern="([a-zA-Z]){0,20}" title="Please Enter Valid Product Description" placeholder="Description" ng-model= "form.description" required>
+               </div>
+            <br>
+
+                <br>
+                 <span align ="CENTER"><input type="submit" ngClick="Submit" ></span>
+            </form>
+            <br>
+        </div>
+    
+        </table>
+    </div>
+</div>
+{% endblock %}

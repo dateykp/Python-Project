@@ -1,0 +1,112 @@
+{% extends "A_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+ <head>
+   <style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+ 
+
+   <script>
+
+        var app = angular.module("myApp", []);
+        app.controller("RecordCtrl", function($scope,$http,$window) {
+        
+        $scope.fetchData = function(){
+        console.log("hi there");
+            $http({
+                method: 'GET',
+                url: '/getStatusData',
+        
+            }).then(function(response) {
+                 $scope.record=response.data
+                 $scope.downloadSummary()
+                 }, function(error) {
+                console.log(error);
+            });
+        }
+          $scope.fetchData();   
+          
+        $scope.downloadSummary = function(){
+        
+          console.log("Data Submitted");
+          console.log($scope.record);
+          $http({
+                method: 'POST',
+                url: '/downloadStatusSummary',
+                headers: { 'Content-Type': 'application/json' },
+                data: {
+                    info: $scope.record
+                    
+                    }
+                
+            }).then(function(response) {
+             
+            });
+        }
+        
+        });
+    </script>
+ </head>
+<body  ng-controller="RecordCtrl" >
+    <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Status Summary</h3></div
+
+  <form>
+  <h1>Download Status Summary <a href="{{ url_for('static', filename='xls/BMSummary.xlsx') }}" >Download</a></h1>
+            <div class="list_data">
+        <table class="table w3-light-grey" >
+            <thead align="top">
+              <th>
+                  <label for="txtIP" class="control-label">Status</label> <th>Number of Cases</th>
+              </th> 
+              <tr>
+                  <td><label for="txtIP" class="control-label">Analyzing</label></td> <td>{{'{{record.analyzing }}'}}</td>
+              </tr>             
+              <tr>
+                  <td><label for="txtIP" class="control-label">Confirmation Pending From Harsha</label></td> <td>{{'{{record.confirmationPendingFromHarsha }}'}}</td>
+              </tr> 
+              <tr>
+                  <td><label for="txtIP" class="control-label">Data/CV Issue</label></td> <td>{{'{{record.dataCVIssue }}'}}</td>
+              </tr> 
+              <tr>
+                  <td><label for="txtIP" class="control-label">Design Gap</label></td> <td>{{'{{record.designGap }}'}}</td>
+              </tr>  
+              <tr>
+                  <td><label for="txtIP" class="control-label">Fix In Progress</label></td> <td>{{'{{record.fixInProgress }}'}}</td>
+              </tr> 
+              <tr>
+                  <td><label for="txtIP" class="control-label">ICES Defect</label></td> <td>{{'{{record.icesDefect }}'}}</td>
+              </tr> 
+              <tr>
+                  <td><label for="txtIP" class="control-label">ICES Information Needed</label></td> <td>{{'{{record.icesInformationNeeded }}'}}</td>
+              </tr> 
+              <tr>
+                  <td><label for="txtIP" class="control-label">IEDSS Working ICES Cleanup</label></td> <td>{{'{{record.iedssWorkingICESCleanup }}'}}</td>
+              </tr> 
+              <tr>
+                  <td><label for="txtIP" class="control-label">Issue Closed</label></td> <td>{{'{{record.issueClosed }}'}}</td>
+              </tr> 
+              <tr>
+                <td><label for="txtIP" class="control-label">Not To Be Analyzed</label></td><td>{{'{{record.notToBeAnalyzed }}'}}</td>             
+             </tr>
+             <tr>
+                <td><label for="txtIP" class="control-label">Case in none Status</label></td><td>{{'{{record.noStatus }}'}}</td>             
+             </tr>
+        </table>
+         
+                   <a class="btn btn-primary w3-round-xlarge w3-indigo" href="{{ url_for('showBMDataForLeads') }}">Back</a>
+          
+    <form>
+</div>
+      </div>
+      </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}

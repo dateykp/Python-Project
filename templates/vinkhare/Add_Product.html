@@ -1,0 +1,38 @@
+{% extends "S_Dashboard.html" %}
+{% block body %}
+ <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Order Details</h3></div>
+            <div>
+            <form method=POST action="{{ url_for('addproduct') }}">
+            	<br/>
+                <div>
+                <label>Product Name*</label> <input type="text"  class="form-control" name="productname" placeholder="Product Name">
+               </div>
+               
+                <div>
+                <label>Product Type*</label><input type="text" class="form-control"name="Producttype" placeholder="Product Type">
+                </div>
+                
+				   <div>
+                <label>Description*</label><input type="text" class="form-control" name="description" placeholder="Description">
+                </div>
+                
+				   <div>
+                <label>Price/Quantity*</label><input type="number" class="form-control" name="price" placeholder="Price/Quantity">
+                </div>
+                
+				   <div>
+                <label>Quantity Available*</label><input type="number"  class="form-control" name="quantity" placeholder="Quantity Available">
+                </div>
+				
+				    <div>
+                 <label>Delivery Within Days*</label><input type="number" class="form-control" name="delivery" placeholder="Delivery Within Days">
+                 </div>
+                <br>
+                <button type="submit" class="btn btn-primary btn-block">Add Product</button>
+            </form>
+            <br>
+            </div>
+        </div>
+    </div>
+{% endblock %}

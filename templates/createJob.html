@@ -1,0 +1,42 @@
+{% extends "B_Dashboard.html" %}
+{% block body %}
+<div>
+            <form method=POST action="{{ url_for('createJob') }}">
+	
+                <div>
+                <label>Job Name*</label> <input type="text"  class="form-control" name="jobName" placeholder="Job Name">
+               </div>
+               
+                <div>
+                <label>Job Type*</label><input type="text" class="form-control"name="jobType" placeholder="Job Type">
+                </div>
+                
+				   <div>
+                <label>Drawing Number*</label><input type="text" class="form-control" name="drawingNo" placeholder="Drawing Number">
+                </div>
+                
+				   <div>
+                <label>Parts/Component*</label><input type="text" class="form-control" name="parts" placeholder="Parts/Component">
+                </div>
+                
+				   <div>
+                <label>Notes*</label><input type="text"  class="form-control" name="notes" placeholder="Notes">
+                </div>
+				
+				    <div>
+                 <label>Planned Qty.*</label><input type="text" class="form-control" name="plannedQty" placeholder="Planned Quantity">
+                 </div>
+                
+				   <div>
+                <label>Planned Delivery Date*</label><input type="date"  class="form-control" name="noDaysPerWeek" placeholder="No of Working days/Week">
+                </div>
+                
+				   <div>
+                <label>Delivery Destination*</label><input type="text"  class="form-control" name="delDestination" placeholder="Delivery Destination">
+                </div>
+                <br>
+                <button type="submit" class="btn btn-primary btn-block">Create Job</button>
+            </form>
+            <br>
+        </div>
+{% endblock %}

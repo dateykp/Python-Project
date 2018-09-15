@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Supplier Capacity</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 550px}
+	
+	 .bg{
+	 
+	 width: 80%;
+	 }
+	 
+	 body {
+    background-color: lightgrey;
+}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+        
+    /* On small screens, set height to 'auto' for the grid */
+    @media screen and (max-width: 767px) {
+      .row.content {height: auto;} 
+    }
+  </style>
+</head>
+<body>
+<div class="row">
+<div class="col-md-4 col-md-offset-4">
+            <form method=POST action="{{ url_for('supplierCapacity') }}">
+	
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Supplier Name*</label>
+                    <input type="text" class="form-control" name="sName" placeholder="Supplier Name">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Equipment Machine Name*</label>
+                    <input type="text" class="form-control" name="eqpMachineName" placeholder="Equipment Machine Name">
+                </div>
+				<div class="form-group">
+                    <label for="exampleInputPassword1">Equipment/Machine Specification*</label>
+                    <input type="text" class="form-control" name="eqpSpec" placeholder="Equipment/Machine Specification">
+                </div>
+				<div class="form-group">
+                    <label for="exampleInputPassword1">Equipment/Machine Working Per Day*</label>
+                    <input type="text" class="form-control" name="eqpWorkingPerDay" placeholder="Equipment/Machine Working Per Day">
+                </div>
+				<div class="form-group">
+                    <label for="exampleInputPassword1">No of Working days/Week*</label>
+                    <input type="text" class="form-control" name="noOfWorkingDaysPerWeek" placeholder="No of Working days/Week">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Capacity</button>
+                <a class="btn btn-primary w3-round-xlarge w3-indigo" href="{{ url_for('login') }}">Back</a>
+            </form>
+            <br>
+        </div>
+
+
+
+
+</div>
+</body>
+</html>

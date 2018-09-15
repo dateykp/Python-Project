@@ -1,0 +1,68 @@
+{% extends "B_Dashboard.html" %}
+{% block body %}
+<div class="w3-container w3-display-middle">
+    <div class="row">
+        <div class="">
+            <form method=POST action="{{ url_for('Search_job') }}">
+
+ 
+    <div class="form-group">
+                    <label for="InputEquipmentName" class="w3-text-black">Equipment / Machine name :&nbsp;</label>
+                     <select class="w3-select required">
+							<option value="Please Select">Please Select</option>
+							<option value="volvo">Volvo</option>
+							 <option value="saab">Saab</option>
+							 <option value="mercedes">Mercedes</option>
+							 <option value="audi">Audi</option>
+					</select>
+                </div>
+				
+	<div class="form-group">
+                    <label for="InputEquipmentSpecs" class="w3-text-black">Equipment / Machine Specs :&nbsp;</label>
+                     <select class="w3-select required">
+							<option value="Please Select">Please Select</option>
+							<option value="volvo">Volvo</option>
+							 <option value="saab">Saab</option>
+							 <option value="mercedes">Mercedes</option>
+							 <option value="audi">Audi</option>
+					</select>
+                </div>
+				
+	<div class="form-group">
+                    <label for="InputLocation" class="w3-text-black">Location :&nbsp;</label>
+                     <select class="w3-select required">
+							<option value="Please Select">Please Select</option>
+							<option value="volvo">Hyderabad</option>
+							 <option value="saab">Bangalore</option>
+							 <option value="mercedes">Chennai</option>
+							 <option value="audi">Mumbai</option>
+					</select>
+                </div>
+	<div class="form-group">
+                    <label for="InputDistrict" class="w3-text-black">District :&nbsp;</label>
+                    <select class="w3-select required">
+							<option value="Please Select">Please Select</option>
+							<option value="volvo">Vskp</option>
+							 <option value="saab">Kammam</option>
+							 <option value="mercedes">Kurnool</option>
+							 <option value="audi">vzm</option>
+					</select>
+                </div>
+	<div class="form-group">
+                    <label for="InputPincode" class="w3-text-black">PinCode :&nbsp;</label>
+                    <select class="w3-select required">
+						<option value="Please Select">Please Select</option>
+							<option value="volvo">5000081</option>
+							 <option value="saab">5000082</option>
+							 <option value="mercedes">5000083</option>
+							 <option value="audi">5000084</option>
+					</select>
+                </div>
+                <button type="submit" class="btn btn-primary w3-round-xlarge w3-indigo">Search</button>
+				<a class="btn btn-primary w3-round-xlarge w3-indigo" href="{{ url_for('home') }}">Back</a>
+            </form> 
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock %}

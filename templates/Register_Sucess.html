@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="w3-container w3-display-middle w3-margin w3-white w3-hover-shadow">
+	<br>
+    <h1 class="w3-center">USERNAME : {{params[0]}}<h1>
+	<br>
+	<h1 class="w3-center">PASSWORD : {{params[1]}}<h1>
+	<br>
+	<a class="btn btn-primary btn-block w3-indigo w3-round-xlarge" href="{{ url_for('home') }}">Back</a>
+  </div>
+  
+{% endblock %}

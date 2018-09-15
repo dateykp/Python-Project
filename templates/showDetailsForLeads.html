@@ -1,0 +1,165 @@
+{% extends "A_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+ <head>
+   <style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+   <script>
+        var app = angular.module("myApp", []);
+        app.controller("FormCtrl", function($scope,$http) {
+        $scope.prevStatus="";
+        $scope.showMassage = function(){
+         console.log("Inside showMessage");
+         if($scope.caseData.RTC_ID=="" && $scope.caseData.STATUS=="Fix In Progress")
+             {
+             $scope.caseData.STATUS=$scope.prevStatus
+             $('#mustHaveRTCID').modal('show')
+             console.log("inside if");
+             }
+             
+        }
+        $scope.case_num = '{{case_num}}';
+        $scope.fetchData = function(){
+                console.log($scope.case_num);
+					$http({
+						method: 'POST',
+						url: '/showOneCase',
+						data: {_id :$scope.case_num},
+                 headers: { 'Content-Type': 'application/json' },
+            }).then(function(response) {
+                $scope.caseData = response.data;
+                console.log($scope.caseData);
+                 }, function(error) {
+                console.log(error);
+            });
+        }
+        $scope.fetchData(); 
+        
+        $scope.submitForm = function(){
+        
+          console.log("Data Submitted");
+          console.log($scope.caseData);
+          $http({
+                method: 'POST',
+                url: '/updateLeadRecord',
+                headers: { 'Content-Type': 'application/json' },
+                data: {
+                    info: $scope.caseData
+                    
+                    }
+                
+            }).then(function(response) {
+                $('#recordAdded').modal('show')
+
+               }, function(error) {
+                console.log(error);
+            });
+        }
+    
+        });
+    </script>
+ </head>
+<body ng-controller="FormCtrl">
+
+    <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Case Detail</h3></div>
+        <div class="modal fade" id="mustHaveRTCID" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#F3206D;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Can Not update status to 'Fix In Progress' without RTC ID please contact to Leads</h4>
+                </div>
+            </div>
+         </div>   
+        </div>
+         <div class="modal fade" id="recordAdded" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#3CF320;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Data Updated</h4>
+                </div>
+            </div>
+        </div>
+   </div>
+ <div>
+    <table class="table w3-light-grey" >
+      <form name="showDetails" method=POST ng-controller="FormCtrl" ng-submit="submitForm()">
+      <br/>
+              <div>
+                <label for="txtUsername" class="control-label">RTC ID</label>
+                <input type="text" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"  class="form-control" ng-model="caseData.RTC_ID"  id="txtUsername" ng-change="onOrderChange(record)" required>
+                                 
+             </div>
+               <br>
+                <div>
+                <label for="txtUsername" class="control-label">ASSIGNEE</label>
+                <input type="text" ng-model="caseData.ASSIGNEE" class="form-control" id="txtIP" >
+             </div>
+             <br>
+                <div>
+                <label for="txtUsername" class="control-label">ASSIGNED DATE</label>
+                <input type="text" ng-model="caseData.ASSIGNED_DATE" class="form-control" id="txtIP" >
+             </div>
+               <br>
+                <div>
+                <label for="txtUsername" class="control-label">Analysis Completed</label>
+                <select ng-model="caseData.ANALYSIS_COMPLETED" class="form-control">
+                                 <option value="Y">YES</option>
+                                 <option value="N">NO</option>
+                        </select>
+             </div>
+               <br>
+             <div>
+                <label for="txtIP" class="control-label">Duplicate Issue</label>
+                <input type="text" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"  class="form-control" ng-model="caseData.DUPLICATE_ISSUE"  id="txtUsername" required>
+                </div>
+                <br>
+				   <div>
+                <label for="txtIP" class="control-label">Status</label>
+                <select ng-model="caseData.STATUS" class="form-control" ng-change="showMassage()">
+                                 <option value="Analyzing">Analyzing</option>
+                                 <option value="Confirmation Pending from Harsha">Confirmation Pending from Harsha</option>
+                                 <option value="Data/CV Issue">Data/CV Issue</option>
+                                 <option value="Design Gap">Design Gap</option>
+                                 <option value="Fix In Progress">Fix In Progress</option>
+                                 <option value="ICES Defect">ICES Defect</option>
+                                 <option value="ICES-Information Needed">ICES-Information Needed</option>
+                                 <option value="IEDSS is working fine-ICES Clean up">IEDSS is working fine-ICES Clean up</option>
+                                 <option value="Issue Closed">Issue Closed</option>
+                                 <option value="Not to be analyzed">Not to be analyzed</option>
+                        </select>
+                </div>
+                <br>
+				   <div>
+                <label for="txtUsername" class="control-label">DEVELOPERS COMMENT</label>
+                <textarea rows="5" cols="120" ng-model="caseData.DEVELOPERS_COMMENT" form="comment" class="form-control"></textarea>
+                </div>
+				   <br>
+				   
+				   <div>
+				  
+                <label for="txtUsername" class="control-label">Leads COMMENT</label>
+               
+                <textarea class="form-control" rows="5" cols="120" ng-model="caseData.LEADS_COMMENTS"></textarea>    
+                </div>
+       `
+                
+                <br>
+               
+                 <button ng-show="!showAdd" id="btnAdd" ng-click="submitForm()" type="button" class="btn btn-primary"  data-dismiss="modal" class="form-control" >Update</button>
+                   <a class="btn btn-primary w3-round-xlarge w3-indigo" href="{{ url_for('showBMDataForLeads') }}">Back</a>
+          </form>
+      </table>
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}

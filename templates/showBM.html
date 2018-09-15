@@ -1,0 +1,279 @@
+{% extends "S_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+<style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+
+
+
+<script>
+var app = angular.module("myApp", []);
+app.controller("RecordCtrl", function($scope,$http) {
+console.log("hhh");
+    $scope.info={};
+     $scope.username="";
+  $scope.fetchData = function(){
+console.log("hi there");
+    $http({
+        method: 'POST',
+        url: '/showAllBMData',
+
+    }).then(function(response) {
+         console.log(response.data);
+           $scope.username="{{session['username']}}";
+           console.log( $scope.username);
+          $scope.records=response.data;
+  
+        
+        
+         }, function(error) {
+        console.log(error);
+    });
+}
+
+$scope.updateProduct = function(){
+    				console.log($scope.info)
+					$http({
+						method: 'POST',
+						url: '/updateProduct',
+						data: {info:$scope.info}
+					}).then(function(response) {
+						console.log(response.data);
+						$scope.fetchData();
+						$('#addPopUp').modal('hide')
+					}, function(error) {
+						console.log(error);
+					});
+				}
+
+
+$scope.editBMData = function(id){
+					$scope.info.id = id;
+					$http({
+						method: 'POST',
+						url: '/showOneCase',
+						data: {PRDS4_CASE_NUM :$scope.info.id}
+					}).then(function(response) {
+    							
+						$scope.info = angular.fromJson(response.data);
+						$scope.info = $scope.info[0];
+						console.log($scope.info);
+						
+					}, function(error) {
+						console.log(error);
+					});
+				}
+
+$scope.fetchData();
+
+     $scope.showComments = function(record){
+      $scope.info = record;
+      console.log($scope.info);
+      $('#showCommentsPopup').modal('show')
+      }  
+      
+	
+  })
+   
+   
+
+	
+</script>
+
+
+</head>
+
+
+<body  ng-controller="RecordCtrl" >
+<div class="list_data">
+      <div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>My Assignments</h3></div>
+         
+    
+  </div>
+    <form>
+    <div class="form-group">
+      <div class="input-group">
+        <table>
+            <h3>Search BM Data</h3>
+            <thead>
+        <tr>
+              <th>  <input type="search"  placeholder="Search EDG NUm" ng-model="EDG_NUM"> </th>
+               <th> <input type="search"  placeholder="Search PROD CASE" ng-model="PRDS4_CASE_NUM"></th>
+               <th> <input type="search"  placeholder="Search Assignee" ng-model="ASSIGNEE"></th>
+                <th><input type="search"  placeholder="Search DEV4 CASE" ng-model="DEV_4_CASE_NUMBER"></th>
+              <th>  <input type="search"  placeholder="Search TOA" ng-model="TOA"></th>
+            <th>    <input type="search"  placeholder="Search GROUP LEVELNOTICE" ng-model="GROUPLEVELREASONS"></th>
+              <th>  <input type="search"  placeholder="Search PERSON LEVEL NOTICE" ng-model="PERSONLEVELREASONS"></th>
+             <th>   <input type="search"  placeholder="Search RTC ID" ng-model="RTC_ID"></th>
+              <th>  <input type="search"  placeholder="Search STATUS" ng-model="STATUS"></th>
+        </tr>
+    </thead>
+        </table>
+        <h1>{{searchKeywords}}</h1>
+      </div>      
+    </div>
+  </form>
+
+
+<hr />
+<table class="table table-bordered">
+<thead>
+      <tr>
+      <th>Show Comments</th>
+          <th>
+            <a href="#" ng-click="sortType = 'SR_NUM'; sortReverse = !sortReverse">
+                SR NUM
+            <span ng-show="sortType == 'SR_NUM' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'SR_NUM' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+            <a href="#" ng-click="sortType = 'EDG_NUM'; sortReverse = !sortReverse">
+                EDG NUM
+            <span ng-show="sortType == 'EDG_NUM' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'EDG_NUM' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+            <a href="#" ng-click="sortType = 'PRDS4_CASE_NUM'; sortReverse = !sortReverse">
+            PRDS4 CASE NUM
+            <span ng-show="sortType == 'PRDS4_CASE_NUM' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'PRDS4_CASE_NUM' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+             <a href="#" ng-click="sortType = 'DEV_4_CASE_NUMBER'; sortReverse = !sortReverse">
+            DEV4 CASE NUM
+            <span ng-show="sortType == 'DEV_4_CASE_NUMBER' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'DEV_4_CASE_NUMBER' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+         <th>
+             <a href="#" ng-click="sortType = 'ASSIGNEE'; sortReverse = !sortReverse">
+            ASSIGNEE
+            <span ng-show="sortType == 'ASSIGNEE' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'ASSIGNEE' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+            <a href="#" ng-click="sortType = 'TYPE_OF_ASSISTANCE_CD'; sortReverse = !sortReverse">
+            TYPE OF ASSISTANCE
+            <span ng-show="sortType == 'TYPE_OF_ASSISTANCE_CD' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'TYPE_OF_ASSISTANCE_CD' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+       
+        <th>
+             <a href="#" ng-click="sortType = 'GROUPLEVELREASONS'; sortReverse = !sortReverse">
+            GROUP LEVEL REASONS
+            <span ng-show="sortType == 'GROUPLEVELREASONS' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'GROUPLEVELREASONS' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+             <a href="#" ng-click="sortType = 'PERSONLEVELREASONS'; sortReverse = !sortReverse">
+            PERSON LEVEL REASONS
+            <span ng-show="sortType == 'PERSONLEVELREASONS' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'PERSONLEVELREASONS' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+            <a href="#" ng-click="sortType = 'RTC_ID'; sortReverse = !sortReverse">
+            RTC ID
+            <span ng-show="sortType == 'RTC_ID' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'RTC_ID' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+            <a href="#" ng-click="sortType = 'Duplicate_Issue'; sortReverse = !sortReverse">
+            Duplicate Issue
+            <span ng-show="sortType == 'Duplicate_Issue' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'Duplicate_Issue' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+            <a href="#" ng-click="sortType = 'Analysis_Completed'; sortReverse = !sortReverse">
+            ANALYSIS COMPLETED
+            <span ng-show="sortType == 'Analysis_Completed' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'Analysis_Completed' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+        <th>
+            <a href="#" ng-click="sortType = 'STATUS'; sortReverse = !sortReverse">
+            STATUS
+            <span ng-show="sortType == 'STATUS' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'STATUS' && sortReverse" class="fa fa-caret-up"></span>
+        </th>
+
+      </tr>
+ </thead>
+ <h3> Total Records: {{'{{filtered.length}}'}}</h3>
+<tr ng-repeat="record in filtered= (records | filter: {EDG_NUM : EDG_NUM, PRDS4_CASE_NUM: PRDS4_CASE_NUM,ASSIGNEE : ASSIGNEE,DEV_4_CASE_NUMBER : DEV_4_CASE_NUMBER,TYPE_OF_ASSISTANCE_CD : TOA,GROUPLEVELREASONS : GROUPLEVELREASONS,PERSONLEVELREASONS : PERSONLEVELREASONS,RTC_ID : RTC_ID, STATUS : STATUS} )| orderBy:sortType:sortReverse " >
+                <!-- ./showDetails/{{'{{record.PRDS4_CASE_NUM }}'}}
+                ng-click="editBMData(record.PRDS4_CASE_NUM )
+                -->
+                <td><span style="cursor:pointer;" ng-click="showComments(record)" class="glyphicon glyphicon-edit" aria-hidden="true"></span></td>
+                <td>{{'{{record.SR_NUM }}'}}</td>
+                <td>{{'{{record.EDG_NUM }}'}}</td>
+                <td ng-if="record.ASSIGNEE== username">
+                <a href="./showDetails/{{'{{record._id }}'}}" >
+                {{'{{record.PRDS4_CASE_NUM }}'}}
+                </td>
+                <td ng-if="record.ASSIGNEE!= username">
+                
+                {{'{{record.PRDS4_CASE_NUM }}'}}
+                </td>
+                <td>{{'{{record.DEV_4_CASE_NUMBER  }}'}}</td> 
+                <td>{{'{{record.ASSIGNEE  }}'}}</td>
+                <td>{{'{{record.TYPE_OF_ASSISTANCE_CD  }}'}}</td>
+                <td>{{'{{record.GROUPLEVELREASONS  }}'}}</td>
+                <td>{{'{{record.PERSONLEVELREASONS  }}'}}</td>
+                <td>{{'{{record.RTC_ID  }}'}}</td>
+                <td>{{'{{record.DUPLICATE_ISSUE}}'}}</td>
+                <td>{{'{{record.ANALYSIS_COMPLETED}}'}}</td>
+                <td>{{'{{record.STATUS}}'}}</td>
+            
+               
+          
+            
+</tr>
+</table>
+<div data-pagination="" data-num-pages="numOfPages()" 
+      data-current-page="curPage" data-max-size="maxSize"  
+      data-boundary-links="true"></div>
+</div>
+</div>
+
+<div class="modal fade" id="showCommentsPopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Comments</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label class="control-label">Developer Comment</label>
+                            <textarea class="form-control" ng-model="info.DEVELOPERS_COMMENT"  rows="5" cols="120"   disabled></textarea>    
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Lead Comment</label>
+                            <textarea class="form-control" ng-model="info.LEADS_COMMENTS"  rows="5" cols="120"   disabled></textarea>    
+                        </div>
+                        <div class="modal-footer">
+                    <button type="button"  class="btn btn-default" data-dismiss="modal">Close</button>
+					<!--<button ng-show="!showAdd" id="btnAdd" ng-click="updateProduct()" type="button" class="btn btn-primary"  data-dismiss="modal">Update</button>-->
+                </div>
+                    </form>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+
+{% endblock %}

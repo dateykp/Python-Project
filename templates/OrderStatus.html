@@ -1,0 +1,31 @@
+o{% extends "B_Dashboard.html" %}
+{% block body %}
+<div class="w3-container w3-display-middle">
+    <div class="row">
+        <div class="">
+            <form method=POST action="{{ url_for('ostatus') }}">
+            <h1>Create Order Status</h1>
+    <div class="form-group">
+                    <label for="InputName" class="w3-text-black">Name</label>
+                    <input type="text" class="form-control w3-input" name="name" placeholder="Enter Name" required>
+                </div>
+	<div class="form-group">
+                    <label for="InputLocation" class="w3-text-black">Location</label>
+                    <input type="text" class="form-control w3-input" name="location" placeholder="Enter Location" required>
+                </div>
+	<div class="form-group">
+                    <label for="InputDistrict" class="w3-text-black">District</label>
+                    <input type="text" class="form-control w3-input" name="district" placeholder="Enter District" required>
+                </div>
+	<div class="form-group">
+                    <label for="InputPincode" class="w3-text-black">PinCode</label>
+                    <input type="text" pattern="[0-9]{5}" title="Five digit zip code"  class="form-control w3-input" name="pincode" placeholder="Enter Pincode" required>
+                </div>
+                <button type="submit" class="btn btn-primary w3-round-xlarge w3-indigo">Submit</button>
+            </form> 
+            <br>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

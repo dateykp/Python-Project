@@ -1,0 +1,236 @@
+{% extends "S_Dashboard.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+<style>
+	    .list_data { margin-bottom: 2rem }
+	    table, th, td { border: 1px solid #AAA }
+	    th { cursor: pointer }
+    </style>
+ <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+<script>
+
+var app = angular.module("myApp", []);
+app.controller("RecordCtrl", function($scope,$http) {
+
+console.log("hhh");
+  $scope.fetchData = function(){
+console.log("hi there");
+    $http({
+        method: 'POST',
+        url: '/stock',
+
+    }).then(function(response) {
+         
+        $scope.records=response.data;
+         }, function(error) {
+        console.log(error);
+    });
+}
+
+
+$scope.fetchData();
+
+     $scope.getStock = function(record){
+       console.log(record);
+       $scope.products = {};
+       $scope.info = record;
+       $http({
+        method  : 'POST',
+        url     : '/getStock',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+                    info: $scope.info
+                }
+    })
+      .then(function(response) {
+      $scope.products = angular.fromJson(response.data);
+      
+      console.log($scope.products)
+      $('#showSuppliersList').modal('show')
+         console.log(response);
+        }, function(error) {
+                console.log(error);
+            });
+  };   
+     $scope.placeOrderToSuContractor = function(product){
+        console.log("placeOrderToSuContractor function called");
+       console.log(product);
+       $scope.info = product;
+       $http({
+        method  : 'POST',
+        url     : '/placeOrderSupplier',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+                    info: $scope.info
+            }
+    })
+      .then(function(response) {
+         console.log("response recieved");
+      console.log($scope.products)
+      $('#orderPlaced').modal('show')
+         console.log(response);
+        }, function(error) {
+        $('#orderNotPlaced').modal('show')
+                console.log(error);
+            });
+  };  
+       
+	});
+	
+  
+   
+   
+
+	
+</script>
+
+
+</head>
+
+
+<body  ng-controller="RecordCtrl" >
+<div class="panel panel-default">
+        <div class="panel-heading" align="CENTER"><h3>Out Of Stock</h3></div>
+<div class="list_data">
+<div class="modal fade" id="orderNotPlaced" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#F3206D;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Order Not Placed</h4>
+                </div>
+            </div>
+        </div>
+</div>
+<div class="modal fade" id="orderPlaced" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="color:#3CF320;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel" >Order Placed</h4>
+                </div>
+            </div>
+        </div>
+</div>
+
+<hr />
+<table class="table table-bordered">
+<thead>
+      <tr>
+          <th>
+                  <a href="#" ng-click="sortType = 'product_id'; sortReverse = !sortReverse">
+                   Product Id
+                    <span ng-show="sortType == 'product_id' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_id' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_name'; sortReverse = !sortReverse">
+                   Product Name
+                    <span ng-show="sortType == 'product_name' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_name' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'price_per_qty'; sortReverse = !sortReverse">
+                   Price/Qty
+                    <span ng-show="sortType == 'price_per_qty' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'price_per_qty' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_quantity'; sortReverse = !sortReverse">
+                   Available Qty
+                    <span ng-show="sortType == 'product_quantity' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_quantity' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'delivery_day'; sortReverse = !sortReverse">
+                   Delivery Time
+                    <span ng-show="sortType == 'delivery_day' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'delivery_day' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+                  <a href="#" ng-click="sortType = 'product_description'; sortReverse = !sortReverse">
+                   Product Description
+                    <span ng-show="sortType == 'product_description' && !sortReverse" class="fa fa-caret-down"></span>
+                    <span ng-show="sortType == 'product_description' && sortReverse" class="fa fa-caret-up"></span>
+                  </a>
+              </th>
+              <th>
+              Order 
+              </th>
+      </tr>
+ </thead>
+<tr ng-repeat="record in records track by $index" >
+
+
+                <td>{{'{{record.product_id }}'}}</td>
+                <td>{{'{{record.product_name }}'}}</td>
+                <td>{{'{{record.price_per_qty  }}'}}</td>
+                <td>{{'{{record.product_quantity  }}'}}</td>
+                <td>{{'{{record.delivery_day  }}'}}</td>
+                <td>{{'{{record.product_description  }}'}}</td>
+                <td><span style="cursor:pointer;" ng-click="getStock(record)" class="glyphicon glyphicon-pencil" aria-hidden="true"></span></td>
+            
+</tr>
+</table>
+
+</div>
+
+
+     <div class="modal fade" id="showSuppliersList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel" >Product List</h4>
+                    </div>
+                    <div class="modal-body">
+                      <table class="table w3-light-grey">
+                            <thead>
+                             <tr>
+                              <th>Product Id</th>
+                              <th>Product Name</th>
+                              <th>Sub Contractor's Id</th>
+                              <th>Price Per Unit</th>
+                              <th>Available Quantity</th>                              
+                              <th>Ordered   Quantity</th>
+                              <th>Place Order</th>
+                            </tr>
+                        </thead>
+                    <tr ng-repeat="product in products | orderBy:sortType:sortReverse" >
+
+        
+                        <td>{{'{{product.product_id }}'}}</td>
+                        <td>{{'{{product.product_name }}'}}</td>
+                        <td>{{'{{product.subcontractor_id  }}'}}</td>
+                        <td>{{'{{product.price_per_qty  }}'}}</td>
+                        <td>{{'{{product.product_quantity-product.no_orders}}'}}</td>
+                        <td class="form-group">
+                                    
+                             <input type="number" class="form-control" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" ng-model="product.new_order" id="txtUsername">
+                        </td>
+                        <td>
+                        <div ng-if="product.product_quantity > '0' && product.new_order>0 && product.product_quantity >=product.new_order"  style="cursor:pointer;color:#ADA5FA;" ng-click=placeOrderToSuContractor(product) class="glyphicon glyphicon-plus" aria-hidden="true"> ORDER </div>
+                         <div ng-if="product.product_quantity <= '0'" class="glyphicon glyphicon-plus" aria-hidden="true"> ORDER </div>
+                        </td>
+                    </tr>
+             </table>
+    
+    
+                    </div>
+            </div>
+       </div>
+       
+     </div> 
+</body>
+
+</html>
+{% endblock %}

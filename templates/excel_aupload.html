@@ -1,0 +1,9 @@
+{% extends "A_Dashboard.html" %}
+{% block body %}
+	<!--<h1>Download BM data<a href="{{ url_for('static', filename='xls/BM.xlsx') }}" >Download</a></h1>-->
+    </br>
+    <form action="/aupload" method=post enctype=multipart/form-data><table><tr>
+	<td><input type=file  class="form-control" name=file placeholder="Product Data" required></td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+	<td><button type="submit" class="btn btn-primary">Upload</button></tr></table></td>
+    </form>
+{% endblock %}

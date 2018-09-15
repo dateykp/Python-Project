@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Buyers's Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 550px}
+	
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+        
+    /* On small screens, set height to 'auto' for the grid */
+    @media screen and (max-width: 767px) {
+      .row.content {height: auto;} 
+    }
+  </style>
+</head>
+<body>
+<div class="row">
+<div class="w3-container w3-display-topright " >
+  <div class="btn-group " >
+    <a href="#" class="btn btn-primary btn-lg w3-light-grey w3-hover-blue">Order List</a>
+    <a href="#" class="btn btn-primary btn-lg w3-light-grey w3-hover-blue">Order Status</a>
+    <a href="#" class="btn btn-primary btn-lg w3-light-grey w3-hover-blue">Job Search</a>
+	<a href="#" class="btn btn-primary btn-lg w3-light-grey w3-hover-blue">Update Order</a>
+	<a href="#" class="btn btn-primary btn-lg w3-light-grey w3-hover-blue">Logout</a>
+  </div>
+</div>
+
+<div class="container-fluid col-10">
+  <div class="row content">
+    <div class="col-sm-2 sidenav hidden-xs">
+      <img src="C:\img_avatar.png" alt="Avatar" width="195" height="170">
+	  <h5 align='center'>S_Username</h5>
+      <ul class="nav nav-pills nav-stacked w3-light-grey ">
+        <li><a href="#section2" class="w3-hover-blue">WIP Orders</a></li>
+        <li><a href="#section3" class="w3-hover-blue">Completed Orders</a></li>
+        <li><a href="{{ url_for('supplierCapacity') }}" class="w3-hover-blue">Machine Utilization</a></li>
+		<li><a href="#section3" class="w3-hover-blue">Order Status Snapshot</a></li>
+      </ul><br>
+    </div>
+    <br>
+    
+  </div>
+</div>
+
+
+
+
+</div>
+</body>
+</html>

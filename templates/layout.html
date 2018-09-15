@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Benefit Mismatch Dashboard</title>
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/w3.css') }}" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+	<style>
+	
+	body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.w3-tangerine {
+    font-family: "Tangerine", serif;
+}
+
+.bg {
+    /* The image used */
+    background-image: url({{ url_for('static', filename='img/back.jpg') }});
+
+    /* Full height */
+    height: 100%; 
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+</style>
+</head>
+
+<body class="bg">
+
+	
+    {% block body %}{% endblock %}
+
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+</body>
+
+</html>
